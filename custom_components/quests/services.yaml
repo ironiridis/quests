@@ -1,0 +1,30 @@
+complete_quest:
+  fields:
+    realm_id:
+      required: true
+      selector:
+        text:
+    task_id:
+      required: true
+      selector:
+        text:
+    actor:
+      required: false
+      selector:
+        text:
+    response:
+      required: false
+      selector:
+        text:
+          multiline: true
+
+check_quest:
+  fields:
+    realm_id:
+      required: true
+      selector:
+        text:
+    task_id:
+      required: true
+      selector:
+        text:

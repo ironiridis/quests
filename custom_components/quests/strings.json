@@ -1,0 +1,110 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Quests",
+        "description": "Add a local recurring-task tracker for your Home Assistant instance.",
+        "data": {}
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
+    }
+  },
+  "config_subentries": {
+    "realm": {
+      "entry_type": "Realm",
+      "initiate_flow": {
+        "user": "Add Realm"
+      },
+      "step": {
+        "user": {
+          "title": "Add Realm",
+          "description": "Create a realm, enroll Home Assistant users as possible task owners, then define repeating tasks.",
+          "data": {
+            "name": "Realm name",
+            "owner_user_ids": "Eligible task owners"
+          }
+        },
+        "task": {
+          "title": "Add repeating task",
+          "description": "Define a task for this realm. To finish realm creation, leave 'Add another task' disabled.",
+          "data": {
+            "title": "Task title",
+            "description": "Description",
+            "interval_days": "Repeat every (days)",
+            "requires_response": "Requires response",
+            "check_limit": "Check limit",
+            "add_another": "Add another task"
+          }
+        }
+      },
+      "abort": {
+        "realm_already_configured": "A realm with this name already exists.",
+        "no_available_users": "No active Home Assistant users are available for enrollment."
+      },
+      "error": {
+        "invalid_realm_name": "Realm name is invalid.",
+        "no_realm_users": "Select at least one user for this realm.",
+        "invalid_task_name": "Task title is invalid.",
+        "invalid_interval": "Repeat interval must be at least 1 day.",
+        "invalid_check_limit": "Check limit must be 0 or greater.",
+        "duplicate_task": "A task with this name already exists in the realm."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "total_quests": {
+        "name": "Total quests"
+      },
+      "due_quests": {
+        "name": "Due quests"
+      },
+      "overdue_quests": {
+        "name": "Overdue quests"
+      },
+      "due_requires_response": {
+        "name": "Due quests requiring response"
+      }
+    }
+  },
+  "services": {
+    "complete_quest": {
+      "name": "Complete quest",
+      "description": "Mark a realm task as complete.",
+      "fields": {
+        "realm_id": {
+          "name": "Realm ID",
+          "description": "Realm ID generated from the realm name."
+        },
+        "task_id": {
+          "name": "Task ID",
+          "description": "Task ID generated from the task title."
+        },
+        "actor": {
+          "name": "Actor",
+          "description": "Who completed the task."
+        },
+        "response": {
+          "name": "Response",
+          "description": "Optional completion notes."
+        }
+      }
+    },
+    "check_quest": {
+      "name": "Check quest",
+      "description": "Defers a quest by 24 hours and increments its check count.",
+      "fields": {
+        "realm_id": {
+          "name": "Realm ID",
+          "description": "Realm ID generated from the realm name."
+        },
+        "task_id": {
+          "name": "Task ID",
+          "description": "Task ID generated from the task title."
+        }
+      }
+    }
+  }
+}
