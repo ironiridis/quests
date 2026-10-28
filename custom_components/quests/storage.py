@@ -96,14 +96,14 @@ class QuestStore:
 
             return quest
 
-    async def async_claim_quest(
+    async def async_set_champion(
         self,
         quest_id: str,
         *,
-        champion_user_id: str,
-        champion_display_name: str,
+        champion_user_id: str | None,
+        champion_display_name: str | None,
     ) -> Quest:
-        """Claim a quest for a user."""
+        """Set or clear the champion for a quest."""
         async with self._lock:
             if quest_id not in self._quests:
                 raise KeyError(f"Quest '{quest_id}' does not exist")
