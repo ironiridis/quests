@@ -1,0 +1,13 @@
+{
+  "domain": "quests",
+  "name": "Quests",
+  "codeowners": [
+    "@ironiridis"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/ironiridis/quests#readme",
+  "issue_tracker": "https://github.com/ironiridis/quests/issues",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "version": "0.1.0"
+}
