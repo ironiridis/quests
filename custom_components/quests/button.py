@@ -26,7 +26,6 @@ async def async_setup_entry(
     for realm in get_realm_definitions(entry):
         entities: list[ButtonEntity] = []
         for task in realm.tasks:
-            entities.append(QuestClaimButton(entry=entry, realm=realm, task=task))
             entities.append(QuestCompleteButton(entry=entry, realm=realm, task=task))
             if task.check_limit > 0:
                 entities.append(QuestCheckButton(entry=entry, realm=realm, task=task))
@@ -75,69 +74,6 @@ class TaskActionButton(QuestsEntity, ButtonEntity):
         if actor_user_id and (user := await self.hass.auth.async_get_user(actor_user_id)):
             actor_name = user.name or user.id
         return actor_user_id, actor_name
-
-
-class QuestClaimButton(TaskActionButton):
-    """Button used to claim a quest."""
-
-    def __init__(
-        self,
-        *,
-        entry: QuestsConfigEntry,
-        realm: RealmDefinition,
-        task: RealmTaskDefinition,
-    ) -> None:
-        """Initialize claim button."""
-        super().__init__(
-            entry=entry,
-            realm=realm,
-            task=task,
-            unique_suffix="claim_button",
-            name_suffix="claim",
-            icon="mdi:flag-checkered",
-        )
-
-    @property
-    @override
-    def available(self) -> bool:
-        """Return whether this button is available."""
-        return super().available and not self._is_disabled
-
-    @override
-    async def async_press(self) -> None:
-        """Claim the quest for the user who pressed the button."""
-        if self._context is None or self._context.user_id is None:
-            raise HomeAssistantError("Claiming a quest requires an authenticated user.")
-
-        runtime_data = self._entry.runtime_data
-        user_id = self._context.user_id
-        if (user := await self.hass.auth.async_get_user(user_id)) is None:
-            raise HomeAssistantError("Unable to identify the user who claimed the quest.")
-        display_name = user.name or user.id
-
-        quest = await runtime_data.store.async_get_quest(self._quest_id)
-        if quest is None:
-            raise HomeAssistantError(f"Quest '{self._quest_id}' does not exist.")
-        if quest.disabled:
-            raise HomeAssistantError(f"Quest '{self._quest_id}' is disabled.")
-        if user_id not in quest.realm_user_ids:
-            raise HomeAssistantError(
-                f"User '{display_name}' is not enrolled in realm '{self._realm.realm_name}'."
-            )
-
-        quest = await runtime_data.store.async_claim_quest(
-            self._quest_id,
-            champion_user_id=user_id,
-            champion_display_name=display_name,
-        )
-        async_fire_task_state_event(
-            self.hass,
-            quest,
-            event_type="assigned",
-            actor_user_id=user_id,
-            actor_name=display_name,
-        )
-        await runtime_data.coordinator.async_request_refresh()
 
 
 class QuestCompleteButton(TaskActionButton):

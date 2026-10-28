@@ -17,9 +17,9 @@ This repository is scaffolded for **HACS-first development** and intended to evo
   - realm-level summary states (total, due, overdue, requires response)
 - Per-task devices (linked via NPC) containing:
   - disable switch (suppresses due/next + notifications while disabled)
-  - claim button
   - complete button
   - check button (when check limit > 0)
+  - champion selector control
   - champion state output (sticky owner display name)
   - due binary sensor
   - next-due timestamp sensor
@@ -55,7 +55,7 @@ This repository is scaffolded for **HACS-first development** and intended to evo
 5. Select one or more Home Assistant users to enroll in the realm.
 6. Add one or more tasks in the interactive flow, setting repeat interval, response requirement, and check limit.
 
-After setup, open the realm's **NPC** device for realm summary + per-user event outputs, and open each task device for claim/champion/due/next outputs.
+After setup, open the realm's **NPC** device for realm summary + per-user event outputs, and open each task device for champion/check/complete/due/next outputs.
 
 ## Service examples
 
